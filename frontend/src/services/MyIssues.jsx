@@ -9,27 +9,52 @@ function MyIssues() {
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
+  const [votingIssue, setVotingIssue] = useState(null);
 
   useEffect(() => {
     const fetchIssues = async () => {
       try {
         const token = localStorage.getItem("token");
+        console.log('Fetching user issues with token:', token);
         const config = {
           headers: { Authorization: `Bearer ${token}` }
         };
 
-        const res = await axios.get("http://localhost:5000/api/user/issues", config);
+        const res = await axios.get(`${API}/user/issues`, config);
+        console.log('Fetched issues:', res.data);
         setIssues(res.data);
         setFilteredIssues(res.data);
         setLoading(false);
       } catch (err) {
-        console.log(err);
+        console.log('Error fetching issues:', err);
         setLoading(false);
       }
     };
 
     fetchIssues();
   }, []);
+
+  const upvoteIssue = async (id) => {
+    setVotingIssue(id);
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: { Authorization: token }
+      };
+
+      await axios.put(`${API}/issues/${id}/upvote`, {}, config);
+
+      // Update local state
+      setIssues(issues.map(issue =>
+        issue.id === id ? { ...issue, votes: (issue.votes || 0) + 1 } : issue
+      ));
+    } catch (err) {
+      console.log('Error upvoting:', err);
+      alert("Failed to upvote issue");
+    } finally {
+      setVotingIssue(null);
+    }
+  };
 
   useEffect(() => {
     let filtered = issues;
@@ -335,6 +360,57 @@ function MyIssues() {
                         ? `${issue.description.substring(0, 120)}...`
                         : issue.description}
                     </p>
+
+                    {/* Vote Section */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'space-between',
+                      marginBottom: '15px'
+                    }}>
+                      <div style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '10px'
+                      }}>
+                        <span style={{
+                          fontSize: '1.2rem',
+                          color: '#4ecdc4'
+                        }}>
+                          👍 {issue.votes || 0}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            upvoteIssue(issue.id);
+                          }}
+                          disabled={votingIssue === issue.id}
+                          style={{
+                            padding: '6px 12px',
+                            background: votingIssue === issue.id ? '#ccc' : '#4ecdc4',
+                            color: 'white',
+                            border: 'none',
+                            borderRadius: '20px',
+                            fontSize: '0.8rem',
+                            fontWeight: '600',
+                            cursor: votingIssue === issue.id ? 'not-allowed' : 'pointer',
+                            transition: 'all 0.2s'
+                          }}
+                          onMouseEnter={(e) => {
+                            if (votingIssue !== issue.id) {
+                              e.target.style.transform = 'scale(1.05)';
+                            }
+                          }}
+                          onMouseLeave={(e) => {
+                            if (votingIssue !== issue.id) {
+                              e.target.style.transform = 'scale(1)';
+                            }
+                          }}
+                        >
+                          {votingIssue === issue.id ? 'Voting...' : 'Upvote'}
+                        </button>
+                      </div>
+                    </div>
 
                     <div style={{
                       display: 'flex',

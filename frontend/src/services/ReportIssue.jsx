@@ -35,7 +35,7 @@ function ReportIssue() {
       };
 
       await axios.post(
-        "http://localhost:5000/api/issues",
+        `${API}/issues`,
         { title, description, location, category, priority },
         config
       );

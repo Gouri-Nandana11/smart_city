@@ -42,7 +42,7 @@ function AdminDashboard() {
         headers: { Authorization: `Bearer ${token}` }
       };
 
-      const res = await axios.get("http://localhost:5000/api/issues", config);
+      const res = await axios.get(`${API}/issues`, config);
       setIssues(res.data);
       setFilteredIssues(res.data);
       setLoading(false);
@@ -54,6 +54,7 @@ function AdminDashboard() {
 
   const updateStatus = async (id, status) => {
     setUpdatingIssue(id);
+    console.log('Updating issue id:', id, 'to', status);
     try {
       const token = localStorage.getItem("token");
       const config = {
@@ -61,7 +62,7 @@ function AdminDashboard() {
       };
 
       await axios.put(
-        `http://localhost:5000/api/issues/${id}`,
+        `${API}/issues/${id}`,
         { status },
         config
       );
@@ -75,6 +76,25 @@ function AdminDashboard() {
       alert("Failed to update issue status");
     } finally {
       setUpdatingIssue(null);
+    }
+  };
+
+  const upvoteIssue = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
+      const config = {
+        headers: { Authorization: `Bearer ${token}` }
+      };
+
+      await axios.put(`${API}/issues/${id}/upvote`, {}, config);
+
+      // Update local state
+      setIssues(issues.map(issue =>
+        issue.id === id ? { ...issue, votes: (issue.votes || 0) + 1 } : issue
+      ));
+    } catch (err) {
+      console.log('Error upvoting:', err);
+      alert("Failed to upvote issue");
     }
   };
 
@@ -487,6 +507,43 @@ function AdminDashboard() {
                     }}>
                       {issue.description}
                     </p>
+
+                    {/* Vote Section */}
+                    <div style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      marginBottom: '15px'
+                    }}>
+                      <span style={{
+                        fontSize: '1rem',
+                        color: '#667eea',
+                        marginRight: '10px'
+                      }}>
+                        👍 {issue.votes || 0} votes
+                      </span>
+                      <button
+                        onClick={() => upvoteIssue(issue.id)}
+                        style={{
+                          padding: '4px 8px',
+                          background: '#667eea',
+                          color: 'white',
+                          border: 'none',
+                          borderRadius: '15px',
+                          fontSize: '0.7rem',
+                          fontWeight: '600',
+                          cursor: 'pointer',
+                          transition: 'all 0.2s'
+                        }}
+                        onMouseEnter={(e) => {
+                          e.target.style.transform = 'scale(1.05)';
+                        }}
+                        onMouseLeave={(e) => {
+                          e.target.style.transform = 'scale(1)';
+                        }}
+                      >
+                        +1
+                      </button>
+                    </div>
 
                     <div style={{
                       display: 'flex',

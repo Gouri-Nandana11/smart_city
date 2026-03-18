@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import API from "../config/api";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -15,11 +16,14 @@ function Login() {
 
     try {
       const res = await axios.post(
-        "http://localhost:5000/api/login",
+        `${API}/login`,
         { email, password }
       );
 
       localStorage.setItem("token", res.data.token);
+      localStorage.setItem("userId", res.data.userId);
+      localStorage.setItem("userName", res.data.name);
+      localStorage.setItem("userEmail", res.data.email);
       window.location.href = "/dashboard";
     } catch (err) {
       setError("Login failed. Please check your credentials.");
