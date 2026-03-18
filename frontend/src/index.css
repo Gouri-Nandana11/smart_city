@@ -1,0 +1,152 @@
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Body */
+body {
+  background: #f5f7fa;
+  color: #333;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Links */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+button:focus {
+  outline: 2px solid #667eea;
+  outline-offset: 2px;
+}
+
+/* Inputs */
+input, textarea, select {
+  font-family: inherit;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c1c1c1;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a8a8a8;
+}
+
+/* Utility Classes */
+.container {
+  width: 90%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.mb-20 {
+  margin-bottom: 20px;
+}
+
+.mb-30 {
+  margin-bottom: 30px;
+}
+
+.mb-40 {
+  margin-bottom: 40px;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .container {
+    width: 95%;
+    padding: 15px;
+  }
+
+  nav {
+    padding: 15px 20px !important;
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  nav > div:last-child {
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+}
+
+@media (max-width: 480px) {
+  nav > div:last-child {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  nav > div:last-child a,
+  nav > div:last-child button {
+    width: 100%;
+    text-align: center;
+    margin: 5px 0;
+  }
+}
+
+/* Issue Card */
+
+.issue-card{
+  background:white;
+  padding:20px;
+  margin:20px 0;
+  border-radius:10px;
+  box-shadow:0 4px 15px rgba(0,0,0,0.08);
+  transition:0.3s;
+}
+
+.issue-card:hover{
+  transform:translateY(-3px);
+}
+
+.issue-card h3{
+  margin-bottom:10px;
+}
+
+.issue-card p{
+  margin-bottom:8px;
+}
+
+/* Buttons */
+
+.btn{
+  padding:8px 16px;
+  border:none;
+  border-radius:6px;
+  background:#0077ff;
+  color:white;
+  cursor:pointer;
+}
+
+.btn:hover{
+  background:#005edb;
+}
